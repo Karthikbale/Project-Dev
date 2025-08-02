@@ -16,12 +16,11 @@ pipeline {
   stages {
 
     stage('Checkout') {
-      steps {
-        sh 'echo passed'
-        // Uncomment if needed:
-        // git branch: 'main', url: 'https://github.com/Karthikbale/Jenkins'
-      }
-    }
+  steps {
+    git branch: 'main', url: 'https://github.com/Karthikbale/Jenkins'
+  }
+}
+
 
     stage('Build and Test') {
       steps {
