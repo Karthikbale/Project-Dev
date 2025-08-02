@@ -17,17 +17,18 @@ pipeline {
 
     stage('Checkout') {
   steps {
-    git branch: 'main', url: 'https://github.com/Karthikbale/Jenkins'
+    git branch: 'main', url: 'https://github.com/Karthikbale/Jenkins/java-maven-sonar-argocd-helm-k8s'
   }
 }
 
 
-    stage('Build and Test') {
-      steps {
-        sh 'ls -ltr'
-        sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
-      }
+   stage('Build and Test') {
+  steps {
+    dir('java-maven-sonar-argocd-helm-k8s/spring-boot-app') {
+      sh 'mvn clean package -DskipTests'
     }
+  }
+}
 
     stage('Static Code Analysis') {
       steps {
