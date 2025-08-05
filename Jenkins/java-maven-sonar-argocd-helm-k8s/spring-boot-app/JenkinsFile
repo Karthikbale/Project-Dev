@@ -57,24 +57,32 @@ pipeline {
       }
     }
 
-   stage('Git Commit & Push') {
-  agent any  // Ensures it runs on Jenkins node, not in Docker agent
+ stage('Git Commit & Push') {
   steps {
-    checkout scm  // Make sure Git repo is checked out
-    sh '''
-      git config user.email "karthikbale2002@gmail.com"
-      git config user.name "Karthik Bale"
+    dir('Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app') {
+      sh '''
+        if [ -d .git ]; then
+          git config user.email "karthikbale2002@gmail.com"
+          git config user.name "Karthik Bale"
 
-      if [ -n "$(git status --porcelain)" ]; then
-        git add .
-        git commit -m "Automated commit from Jenkins"
-        git push origin main
-      else
-        echo "No changes to commit."
-      fi
-    '''
+          git checkout main || git checkout -b main  # ✅ Ensure you're on a branch
+
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "Automated commit from Jenkins"
+            git push origin main
+          else
+            echo "No changes to commit."
+          fi
+        else
+          echo "Not inside a Git repository."
+          exit 1
+        fi
+      '''
+    }
   }
 }
+
 
 
   } // <--- Close stages
