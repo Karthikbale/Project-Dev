@@ -60,22 +60,23 @@ pipeline {
     stage('Update Deployment File') {
   steps {
     withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-      dir('Jenkins/java-maven-sonar-argocd-helm-k8s') {
-        sh '''
-          git config user.email "karthikbale2002@gmail.com"
-          git config user.name "Karthik Bale"
+      dir('.') { // Stay at the repo root
+  sh '''
+    git config user.email "karthikbale2002@gmail.com"
+    git config user.name "Karthik Bale"
 
-          sed -i "s/replaceImageTag/${BUILD_NUMBER}/g spring-boot-app-manifests/deployment.yml"
+    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
 
-          if [ -n "$(git status --porcelain)" ]; then
-            git add spring-boot-app-manifests/deployment.yml
-            git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-            git push https://${GITHUB_TOKEN}@github.com/Karthikbale/Project-Dev.git HEAD:main
-          else
-            echo "No changes to commit."
-          fi
-        '''
-      }
+    if [ -n "$(git status --porcelain)" ]; then
+      git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+      git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+      git push https://${GITHUB_TOKEN}@github.com/Karthikbale/Project-Dev.git HEAD:main
+    else
+      echo "No changes to commit."
+    fi
+  '''
+}
+
     }
   }
 }
