@@ -57,8 +57,10 @@ pipeline {
       }
     }
 
-    stage('Git Commit & Push') {
+   stage('Git Commit & Push') {
+  agent any  // Ensures it runs on Jenkins node, not in Docker agent
   steps {
+    checkout scm  // Make sure Git repo is checked out
     sh '''
       git config user.email "karthikbale2002@gmail.com"
       git config user.name "Karthik Bale"
@@ -73,6 +75,7 @@ pipeline {
     '''
   }
 }
+
 
   } // <--- Close stages
 }   // <--- Close pipeline
