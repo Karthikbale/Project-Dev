@@ -30,7 +30,7 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'Sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
           sh '''
-            cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
+            cd Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app
             mvn sonar:sonar \
               -Dsonar.login=$SONAR_AUTH_TOKEN \
               -Dsonar.host.url=${SONAR_URL}
@@ -46,7 +46,7 @@ pipeline {
       steps {
         script {
           sh '''
-            cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
+            cd Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app
             docker build -t ${DOCKER_IMAGE} .
           '''
           def dockerImage = docker.image("${DOCKER_IMAGE}")
@@ -64,7 +64,7 @@ pipeline {
             git config user.email "karthikbale2002@gmail.com"
             git config user.name "Karthikbale"
             sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-            git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+            git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
             git commit -m "Update image to version ${BUILD_NUMBER}"
             git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
           '''
