@@ -63,11 +63,12 @@ pipeline {
         withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
           dir('.') {
             sh '''
-              git config --global --add safe.directory $(pwd)
-              git config user.email "karthikbale2002@gmail.com"
-              git config user.name "Karthikbale"
+              git config --global --add safe.directory /var/lib/jenkins/workspace/Project
+git config user.email "karthikbale2002@gmail.com"
+git config user.name "Karthikbale"
 
-              sed -i "s/replaceImageTag/${BUILD_NUMBER}/g Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
+sed -i "s#replaceImageTag#${BUILD_NUMBER}#g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
 
               if [ -n "$(git status --porcelain)" ]; then
                 git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
