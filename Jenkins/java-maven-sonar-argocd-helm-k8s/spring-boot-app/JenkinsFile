@@ -58,28 +58,22 @@ pipeline {
     }
 
     stage('Git Commit & Push') {
-      steps {
-        dir('Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app') {
-          sh '''
-            if [ -d .git ]; then
-              git config user.email "karthikbale2002@gmail.com"
-              git config user.name "Karthik Bale"
+  steps {
+    sh '''
+      git config user.email "karthikbale2002@gmail.com"
+      git config user.name "Karthik Bale"
 
-              if [ -n "$(git status --porcelain)" ]; then
-                git add .
-                git commit -m "Automated commit from Jenkins"
-                git push origin main
-              else
-                echo "No changes to commit."
-              fi
-            else
-              echo "Not inside a Git repository."
-              exit 1
-            fi
-          '''
-        }
-      }
-    }
+      if [ -n "$(git status --porcelain)" ]; then
+        git add .
+        git commit -m "Automated commit from Jenkins"
+        git push origin main
+      else
+        echo "No changes to commit."
+      fi
+    '''
+  }
+}
+
   } // <--- Close stages
 }   // <--- Close pipeline
 
