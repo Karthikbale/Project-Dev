@@ -57,31 +57,24 @@ pipeline {
       }
     }
 
-stage('Git Commit & Push') {
+stage('Update Deployment File') {
   steps {
-    script {
-      sh '''
-        if [ -d .git ]; then
+    withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+      dir("${env.WORKSPACE}") {
+        sh '''
           git config user.email "karthikbale2002@gmail.com"
           git config user.name "Karthik Bale"
-
-          git checkout main || git checkout -b main
-
-          if [ -n "$(git status --porcelain)" ]; then
-            git add .
-            git commit -m "Automated commit from Jenkins"
-            git push origin main
-          else
-            echo "No changes to commit."
-          fi
-        else
-          echo "Not inside a Git repository."
-          exit 1
-        fi
-      '''
+          BUILD_NUMBER=${BUILD_NUMBER}
+          sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+          git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+          git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "No changes to commit"
+          git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+        '''
+      }
     }
   }
 }
+
 
 
 
