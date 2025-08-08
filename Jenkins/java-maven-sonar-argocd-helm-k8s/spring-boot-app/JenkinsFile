@@ -19,7 +19,7 @@ pipeline {
       steps {
         git branch: 'main',
             url: 'https://github.com/Karthikbale/Project-Dev.git',
-            credentialsId: 'github'
+            credentialsId: 'git-hub'
       }
     }
 
@@ -62,7 +62,7 @@ pipeline {
 
     stage('Update Deployment File') {
       steps {
-        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+        withCredentials([string(credentialsId: 'git-hub', variable: 'GITHUB_TOKEN')]) {
           dir('Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests') {
             sh '''
               git config user.email "karthikbale2002@gmail.com"
