@@ -12,13 +12,14 @@ pipeline {
     GIT_USER_NAME = "Karthikbale"
     DOCKER_IMAGE = "karthikbale/ultimate-cicd:${BUILD_NUMBER}"
   }
+stage('Checkout') {
+  steps {
+    git branch: 'main',
+        url: 'https://github.com/Karthikbale/Project-Dev.git',
+        credentialsId: 'github'
+  }
+}
 
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
 
     stage('Build and Test') {
       steps {
