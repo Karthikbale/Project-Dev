@@ -7,7 +7,7 @@ pipeline {
   }
 
   environment {
-    SONAR_URL = "http://44.221.64.21:9000"
+    SONAR_URL = "http://44.200.145.125:9000"
     GIT_REPO_NAME = "Jenkins"
     GIT_USER_NAME = "Karthikbale"
     DOCKER_IMAGE = "karthikbale/ultimate-cicd:${BUILD_NUMBER}"
@@ -33,7 +33,7 @@ pipeline {
             cd Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app
             mvn sonar:sonar \
               -Dsonar.login=$SONAR_AUTH_TOKEN \
-              -Dsonar.host.url=http://44.221.64.21:9000
+              -Dsonar.host.url=http://44.200.145.125:9000
           '''
         }
       }
@@ -63,7 +63,7 @@ pipeline {
           dir('Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests') {
             sh '''
               git config user.email "karthikbale2002@gmail.com"
-              git config user.name "Karthik Bale"
+              git config user.name "Karthikbale"
               
               sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" deployment.yml
               
