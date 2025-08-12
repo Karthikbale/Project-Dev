@@ -132,6 +132,8 @@ http://<ec2-instance-public-ip>:8080/restart
 ```
 
 The docker agent configuration is now successful.
+## Kubectl Config
+In Ubuntu usermode 
 ```
 # 1️⃣ Update system
 sudo apt update && sudo apt upgrade -y
