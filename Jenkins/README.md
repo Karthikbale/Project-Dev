@@ -106,14 +106,14 @@ cd /sonarqube-25.8.0.112029/bin/linux-x86-64
 ## Docker Slave Configuration
 
 Run the below command to Install Docker
-
+##root@ip-172-31-64-125:
 ```
 sudo apt update
 sudo apt install docker.io
 ```
  
 ### Grant Jenkins user and Ubuntu user permission to docker deamon.
-##root@ip-172-31-64-125:
+
 ```
 sudo su - 
 usermod -aG docker jenkins
