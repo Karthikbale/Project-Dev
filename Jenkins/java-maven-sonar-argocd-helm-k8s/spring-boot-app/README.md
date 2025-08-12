@@ -11,7 +11,7 @@ Checkout the repo and move to the directory
 
 ```
 git clone https://github.com/Karthikbale/Jenkins/java-maven-sonar-argocd-helm-k8s/sprint-boot-app
-cd java-maven-sonar-argocd-helm-k8s/sprint-boot-app
+cd Jenkins/java-maven-sonar-argocd-helm-k8s/sprint-boot-app
 ```
 
 Execute the Maven targets to generate the artifacts
