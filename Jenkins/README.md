@@ -91,15 +91,24 @@ Hardware Recommendations:
    Minimum 2 GB RAM
    2 CPU cores
 sudo apt update && sudo apt install unzip -y
+
 sudo apt install unzip
+
 adduser sonarqube
+
 wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.8.0.112029.zip
+
 unzip *
+
+
 chmod -R 775 sonarqube-25.8.0.112029
+
 chown -R sonarqube:sonarqube /home/sonarqube/sonarqube-25.8.0.112029
 
 cd /sonarqube-25.8.0.112029/bin/linux-x86-64
+
 ./sonar.sh start
+
 ./sonar.sh status
 
 ## Docker Slave Configuration
