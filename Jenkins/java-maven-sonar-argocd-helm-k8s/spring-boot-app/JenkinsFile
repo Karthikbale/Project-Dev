@@ -61,36 +61,19 @@ pipeline {
                 GIT_REPO_NAME = "Project-Dev"
                 GIT_USER_NAME = "Karthikbale"
             }
-           steps {
-    withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
-        script {
-            // Find the folder containing .git
-            def gitDir = sh(returnStdout: true, script: "find . -type d -name .git | head -n 1 | xargs dirname").trim()
-            
-            if (!gitDir) {
-                error "No .git directory found — make sure the repo is checked out before this stage."
-            }
-
-            dir(gitDir) {
+          steps {
+            withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
                 sh '''
-                    echo "✅ Inside git repo at: $(pwd)"
-                    
-                    # Configure Git
                     git config user.email "karthikbale2002@gmail.com"
                     git config user.name "Karthikbale"
-
-                    # Replace image tag safely
-                    sed -i "s|\\(image:[[:space:]]*[^:]*:\\)replaceImageTag|\\1${BUILD_NUMBER}|g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-
-                    # Stage, commit, and push
+                    BUILD_NUMBER=${BUILD_NUMBER}
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "No changes to commit"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                 '''
-                         }
-                    }
-                }
-             }
+            }
+        }
 
         }
     }
