@@ -9,7 +9,7 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-        //git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
+          git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
       }
     }
     stage('Build and Test') {
