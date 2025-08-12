@@ -120,7 +120,7 @@ usermod -aG docker jenkins
 usermod -aG docker ubuntu
 systemctl restart docker
 ```
-
+Add Dockerpipeline plugin in jenkins
 Once you are done with the above steps, it is better to restart Jenkins.
 
 ```
