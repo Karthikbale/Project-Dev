@@ -192,3 +192,7 @@ After install, watch your operator come up using next command.
 $ kubectl get csv -n operators
 Copy to Clipboard
 To use it, checkout the custom resource definitions (CRDs) introduced by this operator to start using it.
+```
+Check in Putty 
+kubectl get pods -n operators
+
