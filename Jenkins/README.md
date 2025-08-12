@@ -113,7 +113,7 @@ sudo apt install docker.io
 ```
  
 ### Grant Jenkins user and Ubuntu user permission to docker deamon.
-
+##root@ip-172-31-64-125:
 ```
 sudo su - 
 usermod -aG docker jenkins
