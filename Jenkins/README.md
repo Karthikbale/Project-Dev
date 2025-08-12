@@ -90,6 +90,7 @@ Java 17+ (Oracle JDK, OpenJDK, or AdoptOpenJDK)
 Hardware Recommendations:
    Minimum 2 GB RAM
    2 CPU cores
+   ```
 sudo apt update && sudo apt install unzip -y
 
 sudo apt install unzip
@@ -110,6 +111,7 @@ cd /sonarqube-25.8.0.112029/bin/linux-x86-64
 ./sonar.sh start
 
 ./sonar.sh status
+```
 
 ## Docker Slave Configuration
 
