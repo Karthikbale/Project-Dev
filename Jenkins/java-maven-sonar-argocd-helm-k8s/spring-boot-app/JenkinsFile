@@ -50,26 +50,28 @@ pipeline {
             GIT_REPO_NAME = "Project-Dev"
             GIT_USER_NAME = "Karthikbale"
         }
-       steps {
+      steps {
     withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
-        dir("${WORKSPACE}") {  // Ensure we are at repo root
+        dir("${WORKSPACE}") {  // Ensure we are inside the Git repo
             sh '''
                 git config user.email "karthikbale2002@gmail.com"
                 git config user.name "Karthikbale"
 
                 BUILD_NUMBER=${BUILD_NUMBER}
 
-                # Update image tag in deployment YAML
+                # Update deployment YAML image tag
                 sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
 
                 git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                 git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "No changes to commit"
 
-                # Push changes using token authentication
+                # Push changes back to main branch
                 git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
             '''
         }
     }
+}
+
 }
 
     }
