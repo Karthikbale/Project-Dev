@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'karthikbale/ultimate-cicd:v1'
+      image 'karthikbale/ultimate-cicd:replaceImageTag'
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
     }
   }
