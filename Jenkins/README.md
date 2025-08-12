@@ -132,7 +132,47 @@ http://<ec2-instance-public-ip>:8080/restart
 ```
 
 The docker agent configuration is now successful.
+```
+# 1️⃣ Update system
+sudo apt update && sudo apt upgrade -y
 
+# 2️⃣ Install dependencies
+sudo apt install -y curl apt-transport-https conntrack
+
+# 3️⃣ Install Docker (if not installed)
+sudo apt install -y docker.io
+
+# 4️⃣ Add users to Docker group
+sudo usermod -aG docker $USER       # current user (ubuntu)
+sudo usermod -aG docker jenkins     # Jenkins user (optional)
+newgrp docker                       # refresh group without logout
+
+# 5️⃣ Test Docker
+docker ps
+
+# 6️⃣ Download & install Minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# 7️⃣ Verify Minikube
+minikube version
+
+# 8️⃣ Start Minikube with Docker driver
+minikube start --driver=docker
+
+# 9️⃣ Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install kubectl /usr/local/bin/
+kubectl version --client
+
+# 🔟 Check Kubernetes cluster
+kubectl get nodes
+
+# Optional — Make Jenkins use Minikube
+sudo mkdir -p /var/lib/jenkins/.kube
+sudo cp -r ~/.kube/config /var/lib/jenkins/.kube/
+sudo chown -R jenkins:jenkins /var/lib/jenkins/.kube
+```
 
 
 
