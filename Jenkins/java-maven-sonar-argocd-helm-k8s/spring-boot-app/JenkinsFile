@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'karthikbale/ultimate-cicd:replaceImageTag'
+      image 'karthikbale/maven-docker-agent:v1'
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
     }
   }
@@ -9,7 +9,7 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-          git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
+        //git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
       }
     }
     stage('Build and Test') {
@@ -65,9 +65,4 @@ pipeline {
         }
     }
   }
-}    
-
-
-
-
-
+}
