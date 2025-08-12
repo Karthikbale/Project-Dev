@@ -102,7 +102,11 @@ cd /sonarqube-25.8.0.112029/bin/linux-x86-64
 ./sonar.sh start
 ./sonar.sh status
 ```
-
+Open publicid with :9000
+login :admin 
+passwd:admin
+Generate token from sonarqube and add to creds to jenkins for sonarqube as a secret-key 
+sonarqube scanner plugin install in jenkins
 ## Docker Slave Configuration
 
 Run the below command to Install Docker
