@@ -9,15 +9,22 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                sh 'echo passed'
-                  //git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/Karthikbale/Project-Dev.git',
+                        credentialsId: 'githubcreds'
+                    ]]
+                ])
             }
         }
 
         stage('Build and Test') {
             steps {
-                sh 'ls -ltr'
-                sh 'cd Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
+                sh '''
+                    cd Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app
+                    mvn clean package
+                '''
             }
         }
 
@@ -30,8 +37,8 @@ pipeline {
                     sh '''
                         cd Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app
                         mvn sonar:sonar \
-                            -Dsonar.login=$SONAR_AUTH_TOKEN \
-                            -Dsonar.host.url=${SONAR_URL}
+                          -Dsonar.login=$SONAR_AUTH_TOKEN \
+                          -Dsonar.host.url=${SONAR_URL}
                     '''
                 }
             }
@@ -40,7 +47,6 @@ pipeline {
         stage('Build and Push Docker Image') {
             environment {
                 DOCKER_IMAGE = "karthikbale/ultimate-cicd:${BUILD_NUMBER}"
-                REGISTRY_CREDENTIALS = credentials('dockercreds')
             }
             steps {
                 script {
@@ -48,9 +54,8 @@ pipeline {
                         cd Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app
                         docker build -t ${DOCKER_IMAGE} .
                     '''
-                    def dockerImage = docker.image("${DOCKER_IMAGE}")
                     docker.withRegistry('https://index.docker.io/v1/', 'dockercreds') {
-                        dockerImage.push()
+                        docker.image("${DOCKER_IMAGE}").push()
                     }
                 }
             }
@@ -61,21 +66,21 @@ pipeline {
                 GIT_REPO_NAME = "Project-Dev"
                 GIT_USER_NAME = "Karthikbale"
             }
-          steps {
-            withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
-                sh '''
-                    git config --global user.name "Karthikbale"
-                    git config --global user.email "karthikbale2002@gmail.com"
-                    git config --global --add safe.directory /var/lib/jenkins/workspace/Project
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
-                '''
-            }
-        }
+            steps {
+                withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        git config --global user.name "${GIT_USER_NAME}"
+                        git config --global user.email "karthikbale2002@gmail.com"
+                        git pull origin main
+                        
+                        sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
 
+                        git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                        git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "No changes to commit"
+                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git main
+                    '''
+                }
+            }
         }
     }
 }
