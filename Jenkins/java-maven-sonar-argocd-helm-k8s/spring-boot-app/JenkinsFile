@@ -56,31 +56,3 @@ pipeline {
                     '''
                     docker.withRegistry('https://index.docker.io/v1/', 'dockercreds') {
                         docker.image("${DOCKER_IMAGE}").push()
-                    }
-                }
-            }
-        }
-
-        stage('Update Deployment File') {
-            environment {
-                GIT_REPO_NAME = "Project-Dev"
-                GIT_USER_NAME = "Karthikbale"
-            }
-            steps {
-                withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
-                    sh '''
-                        git config --global user.name "${GIT_USER_NAME}"
-                        git config --global user.email "karthikbale2002@gmail.com"
-                        git pull origin main
-                        
-                        sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-
-                        git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                        git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "No changes to commit"
-                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git main
-                    '''
-                }
-            }
-        }
-    }
-}
