@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'karthikbale/maven-docker-agent:v1'
+            image 'karthikbale/maven-docker-agent:replaceImageTag'
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
