@@ -8,11 +8,6 @@ pipeline {
  stages {
         stage('Checkout') {
             steps {
-                sh '''
-                    echo "Fixing Git permissions..."
-                    sudo chown -R jenkins:jenkins /var/lib/jenkins/workspace/Project || true
-                    sudo chmod -R 775 /var/lib/jenkins/workspace/Project || true
-                '''
                 sh 'echo passed'
                 // git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
             }
