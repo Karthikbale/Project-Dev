@@ -8,6 +8,7 @@ ARG artifact=target/spring-boot-web.jar
 WORKDIR /opt/app
 
 COPY ${artifact} app.jar
-
+# Expose application port (needed for K8s Service / Docker)
+EXPOSE 8080
 # This should not be changed
 ENTRYPOINT ["java","-jar","app.jar"]
