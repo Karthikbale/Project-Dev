@@ -5,13 +5,13 @@ pipeline {
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
- stages {
+    stages {
         stage('Checkout') {
             steps {
-                sh 'echo passed'
-                // git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
+                git branch: 'main', url: 'https://github.com/Karthikbale/Project-Dev.git'
             }
         }
+
         stage('Build and Test') {
             steps {
                 sh 'ls -ltr'
@@ -21,7 +21,7 @@ pipeline {
 
         stage('Static Code Analysis') {
             environment {
-                SONAR_URL = "http://3.236.6.226:9000"
+                SONAR_URL = "http://98.84.15.192:9000"
             }
             steps {
                 withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
@@ -38,7 +38,6 @@ pipeline {
         stage('Build and Push Docker Image') {
             environment {
                 DOCKER_IMAGE = "karthikbale/ultimate-cicd:${BUILD_NUMBER}"
-                REGISTRY_CREDENTIALS = credentials('dockercreds')
             }
             steps {
                 script {
@@ -59,21 +58,21 @@ pipeline {
                 GIT_REPO_NAME = "Project-Dev"
                 GIT_USER_NAME = "Karthikbale"
             }
-          steps {
-            withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
-                sh '''
-                    git config --global user.name "Karthikbale"
-                    git config --global user.email "karthikbale2002@gmail.com"
-                    git config --global --add safe.directory /var/lib/jenkins/workspace/Project
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
-                '''
+            steps {
+                withCredentials([string(credentialsId: 'githubcreds', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        git config --global user.name "Karthikbale"
+                        git config --global user.email "karthikbale2002@gmail.com"
+                        git config --global --add safe.directory /var/lib/jenkins/workspace/Project
+                        
+                        sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                        
+                        git add Jenkins/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                        git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
+                    '''
+                }
             }
-        }
-
         }
     }
 }
