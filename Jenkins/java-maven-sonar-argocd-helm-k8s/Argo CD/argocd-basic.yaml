@@ -1,4 +1,4 @@
-apiVersion: argoproj.io/v1alpha1
+apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   name: example-argocd
@@ -6,5 +6,7 @@ metadata:
     example: basic
 spec:
   server:
+    route:
+      enabled: true   # optional if you want ingress/route
     service:
-      type: NodePort
+      type: NodePort  # ✅ valid in v1beta1 for most ArgoCD Operator versions
