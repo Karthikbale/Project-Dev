@@ -198,3 +198,37 @@ Check in Putty
 
 kubectl get pods -n operators
 
+
+
+
+##Git permissons 
+
+✅ Full Fix Summary: “insufficient permission” Git error in Jenkins
+1. Check folder ownership
+
+We verified who owned the Jenkins workspace and .git directory:
+
+sudo ls -ld /var/lib/jenkins/workspace/Project
+sudo ls -ld /var/lib/jenkins/workspace/Project/.git
+
+2. Correct permissions
+
+Ensure Jenkins user owns everything inside its workspace:
+
+sudo chown -R jenkins:jenkins /var/lib/jenkins/workspace/Project
+
+3. Remove corrupted workspace
+
+Delete the old project workspace (removes bad .git/objects):
+
+sudo rm -rf /var/lib/jenkins/workspace/Project
+
+4. Restart Jenkins service
+
+Restart Jenkins to refresh environment variables and clear caches:
+
+sudo systemctl restart jenkins
+
+
+  
+
